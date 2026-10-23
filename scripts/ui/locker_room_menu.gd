@@ -104,8 +104,8 @@ func _setup_3d_viewport() -> void:
 
 	var cam := Camera3D.new()
 	cam.position = Vector3(0, 1.15, 3.2)
-	cam.look_at(Vector3(0, 1.0, 0), Vector3.UP)
 	subview.add_child(cam)
+	cam.look_at(Vector3(0, 1.0, 0), Vector3.UP)
 
 func _build_ui() -> void:
 	# Customization Controls Panel on Left

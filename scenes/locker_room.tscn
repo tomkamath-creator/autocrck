@@ -1,0 +1,188 @@
+[gd_scene load_steps=2 format=3 uid="uid://cricstrike_locker_room"]
+
+[ext_resource type="Script" path="res://scripts/ui/locker_room_controller.gd" id="1_locker"]
+
+[node name="LockerRoom" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_locker")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.06, 0.08, 0.12, 1)
+
+[node name="Header" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 60.0
+grow_horizontal = 2
+
+[node name="Title" type="Label" parent="Header"]
+layout_mode = 0
+offset_left = 30.0
+offset_top = 14.0
+offset_right = 440.0
+offset_bottom = 46.0
+theme_override_colors/font_color = Color(0, 0.85, 1, 1)
+theme_override_font_sizes/font_size = 24
+text = "👕 ATHLETE CUSTOMIZATION STUDIO"
+vertical_alignment = 1
+
+[node name="BtnBack" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -130.0
+offset_top = 12.0
+offset_right = -20.0
+offset_bottom = 48.0
+grow_horizontal = 0
+text = "BACK"
+
+[node name="TurntableSubViewport" type="SubViewportContainer" parent="."]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 40.0
+offset_top = -270.0
+offset_right = 640.0
+offset_bottom = 310.0
+grow_vertical = 2
+stretch = true
+
+[node name="SubViewport" type="SubViewport" parent="TurntableSubViewport"]
+handle_input_locally = false
+size = Vector2i(600, 580)
+render_target_update_mode = 4
+
+[node name="Camera3D" type="Camera3D" parent="TurntableSubViewport/SubViewport"]
+transform = Transform3D(1, 0, 0, 0, 0.965926, 0.258819, 0, -0.258819, 0.965926, 0, 1.45, 2.8)
+current = true
+fov = 42.0
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="TurntableSubViewport/SubViewport"]
+transform = Transform3D(0.866025, -0.25, 0.433013, 0, 0.866025, 0.5, -0.5, -0.433013, 0.75, 0, 3, 0)
+light_energy = 1.5
+
+[node name="TurntablePedestal" type="Node3D" parent="TurntableSubViewport/SubViewport"]
+
+[node name="CustomPanel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -580.0
+offset_top = -270.0
+offset_right = -40.0
+offset_bottom = 310.0
+grow_horizontal = 0
+grow_vertical = 2
+
+[node name="LblName" type="Label" parent="CustomPanel"]
+layout_mode = 0
+offset_left = 32.0
+offset_top = 28.0
+offset_right = 160.0
+offset_bottom = 56.0
+text = "PLAYER NAME:"
+
+[node name="EditName" type="LineEdit" parent="CustomPanel"]
+layout_mode = 0
+offset_left = 180.0
+offset_top = 22.0
+offset_right = 480.0
+offset_bottom = 60.0
+text = "V. STRIKER"
+
+[node name="LblNumber" type="Label" parent="CustomPanel"]
+layout_mode = 0
+offset_left = 32.0
+offset_top = 80.0
+offset_right = 160.0
+offset_bottom = 108.0
+text = "JERSEY NO:"
+
+[node name="SpinNumber" type="SpinBox" parent="CustomPanel"]
+layout_mode = 0
+offset_left = 180.0
+offset_top = 74.0
+offset_right = 320.0
+offset_bottom = 112.0
+min_value = 1.0
+max_value = 99.0
+value = 18.0
+
+[node name="LblRole" type="Label" parent="CustomPanel"]
+layout_mode = 0
+offset_left = 32.0
+offset_top = 132.0
+offset_right = 160.0
+offset_bottom = 160.0
+text = "ATHLETE ROLE:"
+
+[node name="OptionRole" type="OptionButton" parent="CustomPanel"]
+layout_mode = 0
+offset_left = 180.0
+offset_top = 126.0
+offset_right = 480.0
+offset_bottom = 164.0
+
+[node name="LblBuild" type="Label" parent="CustomPanel"]
+layout_mode = 0
+offset_left = 32.0
+offset_top = 184.0
+offset_right = 160.0
+offset_bottom = 212.0
+text = "PHYSIQUE BUILD:"
+
+[node name="OptionBuild" type="OptionButton" parent="CustomPanel"]
+layout_mode = 0
+offset_left = 180.0
+offset_top = 178.0
+offset_right = 480.0
+offset_bottom = 216.0
+
+[node name="LblSkin" type="Label" parent="CustomPanel"]
+layout_mode = 0
+offset_left = 32.0
+offset_top = 236.0
+offset_right = 160.0
+offset_bottom = 264.0
+text = "SKIN TONE:"
+
+[node name="OptionSkin" type="OptionButton" parent="CustomPanel"]
+layout_mode = 0
+offset_left = 180.0
+offset_top = 230.0
+offset_right = 480.0
+offset_bottom = 268.0
+
+[node name="BtnSave" type="Button" parent="CustomPanel"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -160.0
+offset_top = -80.0
+offset_right = 160.0
+offset_bottom = -24.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_font_sizes/font_size = 20
+text = "💾 SAVE ATHLETE"

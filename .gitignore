@@ -1,0 +1,8 @@
+# Godot 4 .gitignore
+.godot/
+*.translation
+build/
+*.apk
+*.aab
+debug.keystore
+*.import

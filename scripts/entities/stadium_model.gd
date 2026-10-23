@@ -1,7 +1,7 @@
 extends Node3D
 class_name StadiumModel
 
-# StadiumModel: Regulation 3D Cricket Stadium (140m Outfield, 22-Yard Pitch, Boundary Rope & Grandstands)
+# StadiumModel: Regulation 3D Cricket Stadium with 2K PBR Outfield & Dynamic Pitch Maps
 
 @export var boundary_radius: float = 68.0
 
@@ -29,12 +29,31 @@ func _ready() -> void:
 
 func _init_materials() -> void:
 	grass_mat = StandardMaterial3D.new()
-	grass_mat.albedo_color = Color(0.18, 0.44, 0.16)
-	grass_mat.roughness = 0.85
+	grass_mat.albedo_color = Color(1.0, 1.0, 1.0)
+	if ResourceLoader.exists("res://assets/textures/pbr/turf_2k_albedo.png"):
+		grass_mat.albedo_texture = load("res://assets/textures/pbr/turf_2k_albedo.png")
+		grass_mat.normal_enabled = true
+		grass_mat.normal_texture = load("res://assets/textures/pbr/turf_2k_normal.png")
+		grass_mat.roughness_texture = load("res://assets/textures/pbr/turf_2k_roughness.png")
+		grass_mat.ao_enabled = true
+		grass_mat.ao_texture = load("res://assets/textures/pbr/turf_2k_ao.png")
+		grass_mat.uv1_scale = Vector3(18, 18, 1)
+	else:
+		grass_mat.albedo_color = Color(0.18, 0.44, 0.16)
+		grass_mat.roughness = 0.85
 
 	pitch_mat = StandardMaterial3D.new()
-	pitch_mat.albedo_color = Color(0.68, 0.58, 0.40)
-	pitch_mat.roughness = 0.7
+	pitch_mat.albedo_color = Color(1.0, 1.0, 1.0)
+	if ResourceLoader.exists("res://assets/textures/pbr/pitch_2k_albedo.png"):
+		pitch_mat.albedo_texture = load("res://assets/textures/pbr/pitch_2k_albedo.png")
+		pitch_mat.normal_enabled = true
+		pitch_mat.normal_texture = load("res://assets/textures/pbr/pitch_2k_normal.png")
+		pitch_mat.roughness_texture = load("res://assets/textures/pbr/pitch_2k_roughness.png")
+		pitch_mat.ao_enabled = true
+		pitch_mat.ao_texture = load("res://assets/textures/pbr/pitch_2k_ao.png")
+	else:
+		pitch_mat.albedo_color = Color(0.68, 0.58, 0.40)
+		pitch_mat.roughness = 0.7
 
 	crease_mat = StandardMaterial3D.new()
 	crease_mat.albedo_color = Color(0.96, 0.96, 0.96)
@@ -161,4 +180,5 @@ func _build_floodlights() -> void:
 func update_pitch_material(pitch_key: String) -> void:
 	if DataManager.pitch_types.has(pitch_key):
 		var p: Dictionary = DataManager.pitch_types[pitch_key]
+		# Modulate albedo tint based on pitch type
 		pitch_mat.albedo_color = p["color"]

@@ -87,33 +87,79 @@ func look_at_flat(target: Vector3) -> void:
 
 func _init_materials() -> void:
 	skin_mat = StandardMaterial3D.new()
-	skin_mat.albedo_color = Color(0.78, 0.58, 0.44) # Athletic sun-kissed skin
-	skin_mat.roughness = 0.65
+	skin_mat.albedo_color = Color(1.0, 1.0, 1.0)
+	if ResourceLoader.exists("res://assets/textures/pbr/face_2k_albedo.png"):
+		skin_mat.albedo_texture = load("res://assets/textures/pbr/face_2k_albedo.png")
+		skin_mat.normal_enabled = true
+		skin_mat.normal_texture = load("res://assets/textures/pbr/face_2k_normal.png")
+		skin_mat.roughness_texture = load("res://assets/textures/pbr/face_2k_roughness.png")
+	else:
+		skin_mat.albedo_color = Color(0.78, 0.58, 0.44)
+		skin_mat.roughness = 0.65
 
 	jersey_mat = StandardMaterial3D.new()
-	jersey_mat.albedo_color = Color(0.05, 0.25, 0.65)
-	jersey_mat.roughness = 0.45
+	jersey_mat.albedo_color = Color(1.0, 1.0, 1.0)
+	if ResourceLoader.exists("res://assets/textures/pbr/jersey_2k_albedo.png"):
+		jersey_mat.albedo_texture = load("res://assets/textures/pbr/jersey_2k_albedo.png")
+		jersey_mat.normal_enabled = true
+		jersey_mat.normal_texture = load("res://assets/textures/pbr/jersey_2k_normal.png")
+		jersey_mat.roughness_texture = load("res://assets/textures/pbr/jersey_2k_roughness.png")
+		jersey_mat.ao_enabled = true
+		jersey_mat.ao_texture = load("res://assets/textures/pbr/jersey_2k_ao.png")
+	else:
+		jersey_mat.albedo_color = Color(0.05, 0.25, 0.65)
+		jersey_mat.roughness = 0.45
 
 	pants_mat = StandardMaterial3D.new()
 	pants_mat.albedo_color = Color(0.05, 0.25, 0.65)
-	pants_mat.roughness = 0.5
+	if ResourceLoader.exists("res://assets/textures/pbr/jersey_2k_normal.png"):
+		pants_mat.normal_enabled = true
+		pants_mat.normal_texture = load("res://assets/textures/pbr/jersey_2k_normal.png")
+		pants_mat.roughness = 0.55
 
 	bat_mat = StandardMaterial3D.new()
-	bat_mat.albedo_color = Color(0.92, 0.82, 0.66) # English willow grain
-	bat_mat.roughness = 0.4
+	bat_mat.albedo_color = Color(1.0, 1.0, 1.0)
+	if ResourceLoader.exists("res://assets/textures/pbr/bat_2k_albedo.png"):
+		bat_mat.albedo_texture = load("res://assets/textures/pbr/bat_2k_albedo.png")
+		bat_mat.normal_enabled = true
+		bat_mat.normal_texture = load("res://assets/textures/pbr/bat_2k_normal.png")
+		bat_mat.roughness_texture = load("res://assets/textures/pbr/bat_2k_roughness.png")
+		bat_mat.metallic_texture = load("res://assets/textures/pbr/bat_2k_metallic.png")
+		bat_mat.ao_enabled = true
+		bat_mat.ao_texture = load("res://assets/textures/pbr/bat_2k_ao.png")
+	else:
+		bat_mat.albedo_color = Color(0.92, 0.82, 0.66)
+		bat_mat.roughness = 0.4
 
 	pads_mat = StandardMaterial3D.new()
-	pads_mat.albedo_color = Color(0.95, 0.95, 0.96) # Molded white PU leather
-	pads_mat.roughness = 0.35
+	pads_mat.albedo_color = Color(1.0, 1.0, 1.0)
+	if ResourceLoader.exists("res://assets/textures/pbr/pads_2k_albedo.png"):
+		pads_mat.albedo_texture = load("res://assets/textures/pbr/pads_2k_albedo.png")
+		pads_mat.normal_enabled = true
+		pads_mat.normal_texture = load("res://assets/textures/pbr/pads_2k_normal.png")
+		pads_mat.roughness_texture = load("res://assets/textures/pbr/pads_2k_roughness.png")
+		pads_mat.ao_enabled = true
+		pads_mat.ao_texture = load("res://assets/textures/pbr/pads_2k_ao.png")
+	else:
+		pads_mat.albedo_color = Color(0.95, 0.95, 0.96)
+		pads_mat.roughness = 0.35
 
 	helmet_mat = StandardMaterial3D.new()
-	helmet_mat.albedo_color = Color(0.04, 0.18, 0.45)
-	helmet_mat.roughness = 0.25
+	helmet_mat.albedo_color = Color(1.0, 1.0, 1.0)
+	if ResourceLoader.exists("res://assets/textures/pbr/helmet_2k_albedo.png"):
+		helmet_mat.albedo_texture = load("res://assets/textures/pbr/helmet_2k_albedo.png")
+		helmet_mat.normal_enabled = true
+		helmet_mat.normal_texture = load("res://assets/textures/pbr/helmet_2k_normal.png")
+		helmet_mat.roughness_texture = load("res://assets/textures/pbr/helmet_2k_roughness.png")
+		helmet_mat.metallic_texture = load("res://assets/textures/pbr/helmet_2k_metallic.png")
+	else:
+		helmet_mat.albedo_color = Color(0.04, 0.18, 0.45)
+		helmet_mat.roughness = 0.25
 
 	chrome_mat = StandardMaterial3D.new()
-	chrome_mat.albedo_color = Color(0.85, 0.85, 0.88)
-	chrome_mat.metallic = 0.95
-	chrome_mat.roughness = 0.1
+	chrome_mat.albedo_color = Color(0.88, 0.88, 0.92)
+	chrome_mat.metallic = 0.98
+	chrome_mat.roughness = 0.08
 
 func _build_humanoid_rig() -> void:
 	body_root = Node3D.new()

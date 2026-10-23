@@ -36,8 +36,35 @@ var pitch_spin_factor: float = 0.05
 var trajectory_points: Array[Vector3] = []
 var predicted_points: Array[Vector3] = []
 
+var ball_mesh: MeshInstance3D
+var ball_mat: StandardMaterial3D
+
 func _ready() -> void:
 	load_pitch_properties(GameManager.selected_pitch)
+	_build_ball_mesh()
+
+func _build_ball_mesh() -> void:
+	ball_mesh = MeshInstance3D.new()
+	var sph := SphereMesh.new()
+	sph.radius = ball_radius
+	sph.height = ball_radius * 2.0
+
+	ball_mat = StandardMaterial3D.new()
+	ball_mat.albedo_color = Color(1.0, 1.0, 1.0)
+	if ResourceLoader.exists("res://assets/textures/pbr/ball_2k_albedo.png"):
+		ball_mat.albedo_texture = load("res://assets/textures/pbr/ball_2k_albedo.png")
+		ball_mat.normal_enabled = true
+		ball_mat.normal_texture = load("res://assets/textures/pbr/ball_2k_normal.png")
+		ball_mat.roughness_texture = load("res://assets/textures/pbr/ball_2k_roughness.png")
+		ball_mat.ao_enabled = true
+		ball_mat.ao_texture = load("res://assets/textures/pbr/ball_2k_ao.png")
+	else:
+		ball_mat.albedo_color = Color(0.76, 0.08, 0.12)
+		ball_mat.roughness = 0.3
+
+	sph.material = ball_mat
+	ball_mesh.mesh = sph
+	add_child(ball_mesh)
 
 func load_pitch_properties(pitch_key: String) -> void:
 	if DataManager.pitch_types.has(pitch_key):

@@ -1,33 +1,11 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
-  <defs>
-    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#0d2538;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#050c14;stop-opacity:1" />
-    </linearGradient>
-    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#ffd700;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#ff8800;stop-opacity:1" />
-    </linearGradient>
-    <radialGradient id="ball" cx="40%" cy="40%" r="50%">
-      <stop offset="0%" style="stop-color:#ff4444;stop-opacity:1" />
-      <stop offset="70%" style="stop-color:#aa0000;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#550000;stop-opacity:1" />
-    </radialGradient>
-  </defs>
-  <rect width="128" height="128" rx="28" fill="url(#grad1)" />
-  <!-- Stumps -->
-  <rect x="44" y="32" width="6" height="52" rx="2" fill="#d4a373" />
-  <rect x="61" y="32" width="6" height="52" rx="2" fill="#d4a373" />
-  <rect x="78" y="32" width="6" height="52" rx="2" fill="#d4a373" />
-  <!-- Bails -->
-  <rect x="42" y="28" width="22" height="4" rx="2" fill="#faedcd" />
-  <rect x="64" y="28" width="22" height="4" rx="2" fill="#faedcd" />
-  <!-- Crossed Bat -->
-  <path d="M24 104 L96 32 L106 42 L34 114 Z" fill="url(#gold)" opacity="0.85" />
-  <rect x="96" y="22" width="6" height="18" rx="2" transform="rotate(45 96 22)" fill="#ffffff" />
+  <rect width="128" height="128" rx="28" fill="#0d1b2a"/>
   <!-- Cricket Ball -->
-  <circle cx="88" cy="80" r="22" fill="url(#ball)" />
-  <path d="M72 72 Q 88 88 104 88" stroke="#ffffff" stroke-width="2.5" stroke-dasharray="3,2" fill="none" />
-  <!-- Title text -->
-  <text x="64" y="118" font-family="Arial, Helvetica, sans-serif" font-weight="900" font-size="14" fill="#00e5ff" text-anchor="middle" letter-spacing="1">CRICSTRIKE 3D</text>
+  <circle cx="64" cy="64" r="44" fill="#c1121f"/>
+  <circle cx="64" cy="64" r="44" fill="none" stroke="#780000" stroke-width="4"/>
+  <!-- Ball Seam -->
+  <path d="M 32 36 Q 64 64 96 92" stroke="#ffffff" stroke-width="4" fill="none" stroke-linecap="round" stroke-dasharray="3,3"/>
+  <path d="M 36 32 Q 68 60 100 88" stroke="#ffffff" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <!-- Gloss highlight -->
+  <ellipse cx="48" cy="46" rx="14" ry="7" transform="rotate(-30 48 46)" fill="#ffffff" opacity="0.3"/>
 </svg>

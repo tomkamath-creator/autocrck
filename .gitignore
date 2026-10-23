@@ -1,8 +1,20 @@
-# Godot 4 .gitignore
+# Godot 4+ specific ignores
 .godot/
 *.translation
-build/
+*.import
+
+# Android export
+android/build/
 *.apk
 *.aab
-debug.keystore
-*.import
+*.ap_
+*.dex
+
+# OS generated files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Temporary files
+*.tmp
+*.log

@@ -1,80 +1,78 @@
-# scripts/ui/virtual_joystick.gd
-# 360° Multi-Touch Virtual Thumb Joystick for Mobile Cricket Shot Placement
-class_name VirtualJoystick
 extends Control
+class_name VirtualJoystick
 
-signal joystick_vector_changed(vector: Vector2)
+# VirtualJoystick: High-Performance 360-Degree Multi-Touch Virtual Thumb Joystick
 
-@export var max_radius: float = 64.0
-@export var deadzone: float = 0.12
+signal joystick_moved(direction: Vector2)
+signal joystick_released()
+
+@export var clamp_radius: float = 64.0
+@export var base_color: Color = Color(1, 1, 1, 0.25)
+@export var knob_color: Color = Color(0.2, 0.8, 1.0, 0.85)
 
 var touch_id: int = -1
-var is_active: bool = false
-var center_pos: Vector2 = Vector2.ZERO
-var current_pos: Vector2 = Vector2.ZERO
-var output_vector: Vector2 = Vector2.ZERO
+var is_pressed: bool = false
+var joystick_vector: Vector2 = Vector2.ZERO
+var knob_position: Vector2 = Vector2.ZERO
 
 func _ready() -> void:
 	custom_minimum_size = Vector2(160, 160)
-	center_pos = size * 0.5
-	current_pos = center_pos
+	queue_redraw()
 
 func _gui_input(event: InputEvent) -> void:
 	if event is InputEventScreenTouch:
 		if event.pressed and touch_id == -1:
 			touch_id = event.index
-			is_active = true
-			_update_joystick(event.position)
+			is_pressed = true
+			_update_knob(event.position)
 		elif not event.pressed and event.index == touch_id:
-			_release_joystick()
-			
-	elif event is InputEventScreenDrag:
-		if event.index == touch_id:
-			_update_joystick(event.position)
+			_reset_joystick()
+	elif event is InputEventScreenDrag and event.index == touch_id:
+		_update_knob(event.position)
+	elif event is InputEventMouseButton:
+		if event.pressed and touch_id == -1:
+			touch_id = 0
+			is_pressed = true
+			_update_knob(event.position)
+		elif not event.pressed and touch_id == 0:
+			_reset_joystick()
+	elif event is InputEventMouseMotion and touch_id == 0:
+		_update_knob(event.position)
 
-func _update_joystick(touch_pos: Vector2) -> void:
-	center_pos = size * 0.5
-	var diff = touch_pos - center_pos
-	var dist = diff.length()
+func _update_knob(touch_pos: Vector2) -> void:
+	var center := size * 0.5
+	var offset: Vector2 = touch_pos - center
+	if offset.length() > clamp_radius:
+		offset = offset.normalized() * clamp_radius
 	
-	if dist > max_radius:
-		diff = diff.normalized() * max_radius
-	
-	current_pos = center_pos + diff
-	
-	var norm_dist = diff.length() / max_radius
-	if norm_dist < deadzone:
-		output_vector = Vector2.ZERO
-	else:
-		output_vector = diff.normalized() * ((norm_dist - deadzone) / (1.0 - deadzone))
-	
-	emit_signal("joystick_vector_changed", output_vector)
+	knob_position = offset
+	joystick_vector = offset / clamp_radius
+	joystick_moved.emit(joystick_vector)
 	queue_redraw()
 
-func _release_joystick() -> void:
+func _reset_joystick() -> void:
 	touch_id = -1
-	is_active = false
-	current_pos = size * 0.5
-	output_vector = Vector2.ZERO
-	emit_signal("joystick_vector_changed", Vector2.ZERO)
+	is_pressed = false
+	knob_position = Vector2.ZERO
+	joystick_vector = Vector2.ZERO
+	joystick_released.emit()
 	queue_redraw()
 
 func _draw() -> void:
-	var center = size * 0.5
+	var center := size * 0.5
+	# Outer base ring
+	draw_circle(center, clamp_radius + 12.0, base_color)
+	draw_arc(center, clamp_radius + 12.0, 0, TAU, 32, Color(1, 1, 1, 0.4), 2.0)
 	
-	# Outer glow ring
-	var ring_color = Color(0.0, 0.85, 1.0, 0.35) if is_active else Color(1.0, 1.0, 1.0, 0.18)
-	draw_arc(center, max_radius, 0, TAU, 32, ring_color, 3.0, true)
-	draw_circle(center, max_radius * 0.95, Color(0.05, 0.15, 0.25, 0.25))
-	
-	# 8 Directional guide notches
+	# Directional sector ticks (8 sectors)
 	for i in range(8):
-		var angle = i * (TAU / 8.0)
-		var p1 = center + Vector2(cos(angle), sin(angle)) * (max_radius * 0.75)
-		var p2 = center + Vector2(cos(angle), sin(angle)) * (max_radius * 0.95)
-		draw_line(p1, p2, Color(1, 1, 1, 0.25), 1.5)
-	
-	# Thumb stick knob
-	var knob_color = Color(0.0, 0.9, 1.0, 0.85) if is_active else Color(0.85, 0.9, 1.0, 0.55)
-	draw_circle(current_pos, 28.0, knob_color)
-	draw_circle(current_pos, 10.0, Color(1, 1, 1, 0.95))
+		var angle: float = (float(i) / 8.0) * TAU
+		var p1 := center + Vector2(cos(angle), sin(angle)) * (clamp_radius - 8.0)
+		var p2 := center + Vector2(cos(angle), sin(angle)) * (clamp_radius + 8.0)
+		draw_line(p1, p2, Color(1, 1, 1, 0.3), 1.5)
+
+	# Active knob
+	var knob_center := center + knob_position
+	var cur_color := knob_color if is_pressed else Color(0.8, 0.8, 0.8, 0.6)
+	draw_circle(knob_center, 28.0, cur_color)
+	draw_arc(knob_center, 28.0, 0, TAU, 24, Color.WHITE, 2.0)

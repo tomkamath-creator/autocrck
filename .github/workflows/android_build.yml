@@ -48,6 +48,13 @@ jobs:
           mv /tmp/templates/templates/* ~/.local/share/godot/export_templates/4.3.stable/
           rm -rf /tmp/templates.tpz /tmp/templates /tmp/godot.zip /tmp/godot_bin
 
+      - name: Create Android Debug Keystore
+        run: |
+          keytool -genkey -v -keystore android.keystore -alias androiddebugkey \
+            -keyalg RSA -keysize 2048 -validity 10000 \
+            -storepass android -keypass android \
+            -dname "CN=Android Debug,O=Android,C=US"
+
       - name: Configure Godot Editor Settings for Android Export
         run: |
           mkdir -p ~/.config/godot
@@ -61,16 +68,13 @@ jobs:
           export/android/debug_keystore_pass = "android"
           EOF
 
+      - name: Import Godot Project Cache Headlessly
+        run: |
+          godot --headless --editor --quit
+
       - name: Run Headless Verification Test Suite
         run: |
-          godot --headless scenes/test_runner.tscn
-
-      - name: Create Android Debug Keystore
-        run: |
-          keytool -genkey -v -keystore android.keystore -alias androiddebugkey \
-            -keyalg RSA -keysize 2048 -validity 10000 \
-            -storepass android -keypass android \
-            -dname "CN=Android Debug,O=Android,C=US"
+          godot --headless --quit-after 60 scenes/test_runner.tscn
 
       - name: Export Android APK via Godot
         run: |

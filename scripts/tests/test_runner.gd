@@ -6,7 +6,15 @@ const PlayerCharacter = preload("res://scripts/entities/player_character.gd")
 const BallPhysics = preload("res://scripts/physics/ball_physics.gd")
 const BattingController = preload("res://scripts/gameplay/batting_controller.gd")
 
-func _ready() -> void:
+var has_run: bool = false
+
+func _process(_delta: float) -> void:
+	if has_run:
+		return
+	has_run = true
+	_run_tests()
+
+func _run_tests() -> void:
 	print("====================================================")
 	print("🏏 CRICSTRIKE 3D: HEADLESS TEST SUITE INITIALIZED")
 	print("====================================================")

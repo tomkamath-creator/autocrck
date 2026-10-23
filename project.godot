@@ -9,7 +9,7 @@ config_version=5
 config/name="CricStrike 3D"
 config/description="Production-quality 100% offline 3D mobile cricket game"
 config/version="1.0.0"
-run/main_scene="res://scenes/main_menu.tscn"
+run/main_scene="res://scenes/asset_downloader.tscn"
 config/features=PackedStringArray("4.3", "GL Compatibility")
 config/icon="res://icon.svg"
 

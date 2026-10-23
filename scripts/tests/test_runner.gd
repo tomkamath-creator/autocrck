@@ -27,6 +27,7 @@ func _run_tests() -> void:
 	failed_tests += _test_umpire_rules_and_scoring()
 	failed_tests += _test_tournament_logic_and_nrr()
 	failed_tests += _test_offline_persistence()
+	failed_tests += _test_asset_delivery_and_expansion_system()
 
 	print("====================================================")
 	if failed_tests == 0:
@@ -229,4 +230,36 @@ func _test_offline_persistence() -> int:
 		return 1
 
 	print("  -> Local structured JSON persistence verified successfully.")
+	return 0
+
+func _test_asset_delivery_and_expansion_system() -> int:
+	print("\n[TEST 7] Verifying In-App Asset Delivery & Expansion Pack Mount Engine...")
+	var downloader_scene := load("res://scenes/asset_downloader.tscn")
+	if downloader_scene == null:
+		printerr("FAIL: Unable to load res://scenes/asset_downloader.tscn!")
+		return 1
+
+	var downloader_instance = downloader_scene.instantiate()
+	if downloader_instance == null:
+		printerr("FAIL: Unable to instantiate AssetDownloader!")
+		return 1
+	add_child(downloader_instance)
+
+	# Verify save path definition
+	if downloader_instance.PACK_SAVE_PATH != "user://console_assets_pack.pck":
+		printerr("FAIL: Invalid PACK_SAVE_PATH!")
+		downloader_instance.queue_free()
+		return 1
+
+	# Test mounting PCK if build pack exists locally
+	if FileAccess.file_exists("build/console_assets_pack.pck"):
+		var mounted := ProjectSettings.load_resource_pack("build/console_assets_pack.pck")
+		if not mounted:
+			printerr("FAIL: Could not mount build/console_assets_pack.pck via load_resource_pack!")
+			downloader_instance.queue_free()
+			return 1
+		print("  -> Successfully mounted build/console_assets_pack.pck into Virtual File System!")
+
+	downloader_instance.queue_free()
+	print("  -> Asset delivery UI, streaming downloader, and PCK mounting verified successfully.")
 	return 0

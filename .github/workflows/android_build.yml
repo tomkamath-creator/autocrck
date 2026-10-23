@@ -76,10 +76,11 @@ jobs:
         run: |
           godot --headless --quit-after 60 scenes/test_runner.tscn
 
-      - name: Export Android APK via Godot
+      - name: Export Android APK & Console Expansion Pack via Godot
         run: |
           mkdir -p build
           godot --headless --export-debug "Android" build/cricket_raw.apk
+          godot --headless --export-pack "Android" build/console_assets_pack.pck
 
       - name: Zipalign & Sign APK (v1, v2, v3 Signature Schemes)
         run: |
@@ -99,22 +100,28 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: cricket-apk
-          path: build/cricket.apk
+          name: cricket-release-assets
+          path: |
+            build/cricket.apk
+            build/console_assets_pack.pck
 
-      - name: Publish Direct APK Download on GitHub Releases
+      - name: Publish Direct APK & Expansion Pack on GitHub Releases
         uses: softprops/action-gh-release@v2
         if: github.ref == 'refs/heads/main'
         with:
           tag_name: "v1.0.0-build.${{ github.run_number }}"
           name: "CricStrike 3D v1.0.0 (Build ${{ github.run_number }})"
           body: |
-            ### 🏏 CricStrike 3D Release APK
+            ### 🏏 CricStrike 3D Release APK & Ultra HD Expansion Pack
+            - **Base APK**: `cricket.apk` (Installs lightweight, 100% offline ready)
+            - **Console Expansion Pack**: `console_assets_pack.pck` (2K PBR textures, 3D stadium & bat meshes, 60 FPS MoCap keyframes)
             - **Target OS**: Android 8.0 to Android 14+ (API 34)
             - **Signatures**: v1, v2, v3 verified
             - **Architecture**: arm64-v8a, armeabi-v7a
             - **Game Modes**: Quick Match, Super Over, World Tournament, Mega Auction, Locker Room Customizer
             - **Status**: 100% Offline, Zero Paywalls
-          files: build/cricket.apk
+          files: |
+            build/cricket.apk
+            build/console_assets_pack.pck
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

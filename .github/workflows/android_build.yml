@@ -23,35 +23,47 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Setup Android SDK Build-Tools
-        uses: android-actions/setup-android@v3
-
-      - name: Install Android Build-Tools 34.0.0
+      - name: Verify Pre-Installed Android SDK & Build Tools
         run: |
-          yes | sdkmanager --licenses || true
-          sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
+          echo "ANDROID_HOME: $ANDROID_HOME"
+          BUILD_TOOLS=$(find $ANDROID_HOME/build-tools -mindepth 1 -maxdepth 1 -type d | sort -V | tail -n 1)
+          echo "Found Android Build Tools: $BUILD_TOOLS"
+          echo "BUILD_TOOLS=$BUILD_TOOLS" >> $GITHUB_ENV
 
       - name: Setup Godot 4.3 Engine & Export Templates
         run: |
           GODOT_VERSION="4.3-stable"
           mkdir -p ~/.local/share/godot/export_templates/4.3.stable
-          mkdir -p /opt/godot
+          mkdir -p /tmp/godot_bin
 
           echo "Downloading Godot 4.3 Linux Headless..."
           curl -L -o /tmp/godot.zip https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}/Godot_v${GODOT_VERSION}_linux.x86_64.zip
-          unzip -q /tmp/godot.zip -d /opt/godot
-          mv /opt/godot/Godot_v${GODOT_VERSION}_linux.x86_64 /opt/godot/godot
-          chmod +x /opt/godot/godot
-          echo "/opt/godot" >> $GITHUB_PATH
+          unzip -q /tmp/godot.zip -d /tmp/godot_bin
+          sudo mv /tmp/godot_bin/Godot_v${GODOT_VERSION}_linux.x86_64 /usr/local/bin/godot
+          sudo chmod +x /usr/local/bin/godot
 
           echo "Downloading Godot 4.3 Export Templates..."
           curl -L -o /tmp/templates.tpz https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}/Godot_v${GODOT_VERSION}_export_templates.tpz
           unzip -q /tmp/templates.tpz -d /tmp/templates
           mv /tmp/templates/templates/* ~/.local/share/godot/export_templates/4.3.stable/
+          rm -rf /tmp/templates.tpz /tmp/templates /tmp/godot.zip /tmp/godot_bin
+
+      - name: Configure Godot Editor Settings for Android Export
+        run: |
+          mkdir -p ~/.config/godot
+          cat << EOF > ~/.config/godot/editor_settings-4.tres
+          [gd_resource type="EditorSettings" format=3]
+
+          [resource]
+          export/android/android_sdk_path = "$ANDROID_HOME"
+          export/android/debug_keystore = "$(pwd)/android.keystore"
+          export/android/debug_keystore_user = "androiddebugkey"
+          export/android/debug_keystore_pass = "android"
+          EOF
 
       - name: Run Headless Verification Test Suite
         run: |
-          /opt/godot/godot --headless scenes/test_runner.tscn
+          godot --headless scenes/test_runner.tscn
 
       - name: Create Android Debug Keystore
         run: |
@@ -63,11 +75,11 @@ jobs:
       - name: Export Android APK via Godot
         run: |
           mkdir -p build
-          /opt/godot/godot --headless --export-debug "Android" build/cricket_raw.apk
+          godot --headless --export-debug "Android" build/cricket_raw.apk
 
       - name: Zipalign & Sign APK (v1, v2, v3 Signature Schemes)
         run: |
-          BUILD_TOOLS="$ANDROID_HOME/build-tools/34.0.0"
+          echo "Using build tools from: $BUILD_TOOLS"
           $BUILD_TOOLS/zipalign -v -p 4 build/cricket_raw.apk build/cricket_aligned.apk
           $BUILD_TOOLS/apksigner sign --ks android.keystore \
             --ks-pass pass:android --key-pass pass:android \
